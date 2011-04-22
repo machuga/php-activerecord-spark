@@ -54,9 +54,9 @@ Give model the following content:
 
     <?php
 
-        class Test extends ActiveRecord\Model {
+    class Test extends ActiveRecord\Model {
             
-        }
+    }
 
 
 
@@ -64,7 +64,7 @@ Proceed to 'welcome.php' within your controllers directory
 
 Within the index function, enter the following prior to the view being called
 
-    $this->load->spark('php-activerecord');
+    $this->load->spark('php-activerecord/1.0');
     echo '<pre>'; var_dump(Test::all()); exit;
 
 If you've followed the steps above, you should now see a print out of your
