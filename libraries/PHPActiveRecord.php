@@ -31,7 +31,8 @@ class PHPActiveRecord {
                                     '://'   .$conn['username'].
                                     ':'     .$conn['password'].
                                     '@'     .$conn['hostname'].
-                                    '/'     .$conn['database'];
+                                    '/'     .$conn['database'].
+                                    '?charset='. $db[$name]['char_set'];
             }
 
             // Initialize PHPActiveRecord
