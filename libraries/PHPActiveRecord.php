@@ -14,7 +14,7 @@ class PHPActiveRecord {
         $spark_path = dirname(__DIR__).'/';
 
         // Include the CodeIgniter Database File
-        require_once APPPATH.'config/database'.EXT;
+        require APPPATH.'config/database'.EXT;
 
         // Include the ActiveRecord bootstrapper
         require_once $spark_path.'vendor/php-activerecord/ActiveRecord.php';
@@ -24,7 +24,7 @@ class PHPActiveRecord {
 
         if ($db && $active_group)
         {
-            foreach ($db as $conn_name => $conn) 
+            foreach ($db as $conn_name => $conn)
             {
                 // Build the DSN string for each connection
                 $connections[$conn_name] =   $conn['dbdriver'].
