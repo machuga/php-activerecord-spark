@@ -35,6 +35,17 @@ simply extend your model from the `ActiveRecord\Model` class and your model
 will be ready for use (aside from any extra configuration you may want to add
 later).
 
+### Using with modules
+
+PHPActiveRecord can be used in a modular application. After the spark is loaded,
+you can call, for example in a `users` module:
+
+    $this->phpactiverecord->add_model_path('modules/users/models');
+    
+When calling a model method for the first time, PHPActiveRecord's autoload 
+function will look for a model in each model path, starting with the 
+most-recently added path.
+
 Documentation
 ------------
 
