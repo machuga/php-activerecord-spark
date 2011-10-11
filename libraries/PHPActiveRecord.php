@@ -14,15 +14,15 @@ class PHPActiveRecord {
         $spark_path = dirname(__DIR__).'/';
 
         // Include the CodeIgniter database config file
-        // Is the config file in the environment folder?
-	if ( ! defined('ENVIRONMENT') OR ! file_exists($file_path = APPPATH.'config/'.ENVIRONMENT.'/database.php'))
-	{
-		if ( ! file_exists($file_path = APPPATH.'config/database.php'))
+	    // Is the config file in the environment folder?
+		if ( ! defined('ENVIRONMENT') OR ! file_exists($file_path = APPPATH.'config/'.ENVIRONMENT.'/database.php'))
 		{
-			show_error('PHPActiveRecord: The configuration file database.php does not exist.');
+			if ( ! file_exists($file_path = APPPATH.'config/database.php'))
+			{
+				show_error('PHPActiveRecord: The configuration file database.php does not exist.');
+			}
 		}
-	}
-	require($file_path);
+		require($file_path);
 
         // Include the ActiveRecord bootstrapper
         require_once $spark_path.'vendor/php-activerecord/ActiveRecord.php';
@@ -32,20 +32,19 @@ class PHPActiveRecord {
 
         if ($db && $active_group)
         {
-            foreach ($db as $conn_name => $conn)
+            foreach ($db as $conn_name => $conn) 
             {
                 // Build the DSN string for each connection
                 $connections[$conn_name] =   $conn['dbdriver'].
                                     '://'   .$conn['username'].
                                     ':'     .$conn['password'].
                                     '@'     .$conn['hostname'].
-                                    '/'     .$conn['database'].
-                                    '?charset='. $db[$name]['char_set'];
+                                    '/'     .$conn['database'];
             }
 
             // Initialize PHPActiveRecord
             ActiveRecord\Config::initialize(function ($cfg) use ($connections, $active_group) {
-                $cfg->set_model_directory(APPPATH.'models/');
+		        $cfg->add_model_directory(APPPATH.'models/');
                 $cfg->set_connections($connections);
 
                 // This connection is the default for all models
@@ -54,6 +53,25 @@ class PHPActiveRecord {
 
         }
     }
+	
+	/**
+	 * Add a model path for the AR autoloader to search
+	 * 
+	 * @param string $path
+	 * @return bool
+	 */
+	public function add_model_path($path = '')
+	{
+		try {
+			ActiveRecord\Config::instance()->add_model_directory(APPPATH.$path);
+		}
+		catch (ActiveRecord\ConfigException $cx)
+		{
+			log_message('error','PHPActiveRecord Exception: '.$cx->getMessage());
+			return false;
+		}
+	}
+	
 }
 
 /* End of file PHPActiveRecord.php */

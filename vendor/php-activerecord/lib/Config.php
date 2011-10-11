@@ -59,6 +59,14 @@ class Config extends Singleton
 	private $model_directory;
 
 	/**
+	 * Directory for the auto_loading of model classes.
+	 *
+	 * @see activerecord_autoload
+	 * @var array
+	 */
+	private $model_directories = array();
+
+	/**
 	 * Switch for logging.
 	 *
 	 * @var bool
@@ -191,27 +199,44 @@ class Config extends Singleton
 
 	/**
 	 * Sets the directory where models are located.
-	 *
+	 * 
+	 * @deprecated Use add_model_directory() instead.
 	 * @param string $dir Directory path containing your models
 	 * @return void
 	 */
 	public function set_model_directory($dir)
 	{
-		$this->model_directory = $dir;
+		$this->add_model_directory($dir);
 	}
-
+	
 	/**
-	 * Returns the model directory.
-	 *
-	 * @return string
-	 * @throws ConfigException if specified directory was not found
+	 * Add a directory to the model directories array.
+	 * 
+	 * @throws ConfigException
+	 * @param string $dir
+	 * @return void
 	 */
-	public function get_model_directory()
+	public function add_model_directory($dir = '')
 	{
-		if (!file_exists($this->model_directory))
-			throw new ConfigException('Invalid or non-existent directory: '.$this->model_directory);
-
-		return $this->model_directory;
+		if(empty($dir))
+			throw new ConfigException('Cannot add an empty string to model directories.');
+		
+		if (!file_exists($dir))
+			throw new ConfigException('Cannot add invalid or non-existent model directory: '.$dir);
+		
+		//put new directory at the beginning of the array, since client code will 
+		// tend to add a model directory right before using a model in that directory.
+		array_unshift($this->model_directories,$dir);
+	}
+	
+	/**
+	 * Get an array of model directories.
+	 * 
+	 * @return array
+	 */
+	public function get_model_directories()
+	{
+		return $this->model_directories;
 	}
 
 	/**
@@ -301,4 +326,3 @@ class Config extends Singleton
 		Cache::initialize($url,$options);
 	}
 };
-?>
