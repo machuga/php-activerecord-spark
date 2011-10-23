@@ -55,15 +55,18 @@ class PHPActiveRecord {
     }
 	
 	/**
-	 * Add a model path for the AR autoloader to search
+	 * Add a model path for the AR autoloader to search in
 	 * 
 	 * @param string $path
+	 * @param bool $absolute If true, treat path as an absolute filesystem path
 	 * @return bool
 	 */
-	public function add_model_path($path = '')
+	public function add_model_path($path = '', $absolute = false)
 	{
+		if(is_array($path)) return $this->add_model_paths($path);
+		
 		try {
-			ActiveRecord\Config::instance()->add_model_directory(APPPATH.$path);
+			ActiveRecord\Config::instance()->add_model_directory($absolute ? $path : APPPATH.$path);
 		}
 		catch (ActiveRecord\ConfigException $cx)
 		{
