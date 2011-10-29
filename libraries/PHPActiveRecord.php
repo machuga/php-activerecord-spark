@@ -15,14 +15,15 @@ class PHPActiveRecord {
 
         // Include the CodeIgniter database config file
         // Is the config file in the environment folder?
-	if ( ! defined('ENVIRONMENT') OR ! file_exists($file_path = APPPATH.'config/'.ENVIRONMENT.'/database.php'))
-	{
-		if ( ! file_exists($file_path = APPPATH.'config/database.php'))
-		{
-			show_error('PHPActiveRecord: The configuration file database.php does not exist.');
-		}
-	}
-	require($file_path);
+        if ( ! defined('ENVIRONMENT') OR ! file_exists($file_path = APPPATH.'config/'.ENVIRONMENT.'/database.php'))
+        {
+            if ( ! file_exists($file_path = APPPATH.'config/database.php'))
+            {
+                show_error('PHPActiveRecord: The configuration file database.php does not exist.');
+            }
+        }
+
+        require($file_path);
 
         // Include the ActiveRecord bootstrapper
         require_once $spark_path.'vendor/php-activerecord/ActiveRecord.php';
@@ -35,12 +36,12 @@ class PHPActiveRecord {
             foreach ($db as $conn_name => $conn)
             {
                 // Build the DSN string for each connection
-                $connections[$conn_name] =   $conn['dbdriver'].
-                                    '://'   .$conn['username'].
-                                    ':'     .$conn['password'].
-                                    '@'     .$conn['hostname'].
-                                    '/'     .$conn['database'].
-                                    '?charset='. $conn['char_set'];
+                $connections[$conn_name] =       $conn['dbdriver'].
+                                    '://'       .$conn['username'].
+                                    ':'         .$conn['password'].
+                                    '@'         .$conn['hostname'].
+                                    '/'         .$conn['database'].
+                                    '?charset=' .$conn['char_set'];
             }
 
             // Initialize PHPActiveRecord
@@ -50,6 +51,16 @@ class PHPActiveRecord {
 
                 // This connection is the default for all models
                 $cfg->set_default_connection($active_group);
+
+                // To enable logging and profiling, install the Log library 
+                // from pear and then uncomment the following block:
+
+                /*
+                include 'Log.php';
+                $logger = Log::singleton('file', $_SERVER['DOCUMENT_ROOT'].'/application/logs/phpar.log','ident',array('mode' => 0664, 'timeFormat' =>  '%Y-%m-%d %H:%M:%S')); 
+                $cfg->set_logging(true);
+                $cfg->set_logger($logger);
+                */
             });
 
         }
