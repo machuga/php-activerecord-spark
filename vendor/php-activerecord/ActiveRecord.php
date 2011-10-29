@@ -51,11 +51,11 @@ function activerecord_autoload($class_name)
 		require $file;
     } else {
         $modules_path = APPPATH.'modules';
-        $modules = scandir(realpath($modules_path));
-        foreach ($modules as $module) {
-            $full_path = $modules_path.DS.$module.DS.'models'.DS.$file_name;
-            if ($module != '.' && $module != '..') {
-                if (file_exists($full_path)) {
+        if (is_dir($modules_path)) {
+            $modules = scandir(realpath($modules_path));
+            foreach ($modules as $module) {
+                $full_path = $modules_path.DS.$module.DS.'models'.DS.$file_name;
+                if ($module != '.' && $module != '..' && file_exists($full_path)) {
                     require $full_path;
                 }
             }
