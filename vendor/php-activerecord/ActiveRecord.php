@@ -25,6 +25,9 @@ require 'lib/Cache.php';
 if (!defined('PHP_ACTIVERECORD_AUTOLOAD_DISABLE'))
 	spl_autoload_register('activerecord_autoload',false,PHP_ACTIVERECORD_AUTOLOAD_PREPEND);
 
+if ( ! defined('DS'))
+    define('DS', DIRECTORY_SEPARATOR);
+
 function activerecord_autoload($class_name)
 {
 	$path = ActiveRecord\Config::instance()->get_model_directory();
@@ -38,12 +41,25 @@ function activerecord_autoload($class_name)
 		foreach ($namespaces as $directory)
 			$directories[] = $directory;
 
-		$root .= DIRECTORY_SEPARATOR . implode($directories, DIRECTORY_SEPARATOR);
+		$root .= DS . implode($directories, DS);
 	}
 
-	$file = "$root/$class_name.php";
+    $file_name = "{$class_name}.php";
+	$file = $root.DS.$file_name;
 
-	if (file_exists($file))
+	if (file_exists($file)) {
 		require $file;
+    } else {
+        $modules_path = APPPATH.'modules';
+        $modules = scandir(realpath($modules_path));
+        foreach ($modules as $module) {
+            $full_path = $modules_path.DS.$module.DS.'models'.DS.$file_name;
+            if ($module != '.' && $module != '..') {
+                if (file_exists($full_path)) {
+                    require $full_path;
+                }
+            }
+        }
+    }
 }
 ?>
