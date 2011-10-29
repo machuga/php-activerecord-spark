@@ -291,8 +291,8 @@ abstract class Connection
 	 */
 	public function query($sql, &$values=array())
 	{
-		if ($this->logging)
-			$this->logger->log($sql);
+		//if ($this->logging)
+			//$this->logger->log($sql);
 
 		$this->last_query = $sql;
 
@@ -306,13 +306,30 @@ abstract class Connection
 		$sth->setFetchMode(PDO::FETCH_ASSOC);
 
 		try {
-			if (!$sth->execute($values))
+            $valid = $this->logging ? $this->profile_and_execute($sth, $sql, $values) : $sth->execute($values);
+			if (!$valid)
 				throw new DatabaseException($this);
 		} catch (PDOException $e) {
 			throw new DatabaseException($sth);
 		}
 		return $sth;
 	}
+
+    public function profile_and_execute($sth, $sql, &$values = array()) {
+        $start_time = microtime(true);
+        $valid = $sth->execute($values);
+        $end_time = microtime(true);
+
+        //$exec_time = str_pad(number_format(($end_time - $start_time)*1000, 1), 8, ' ', STR_PAD_LEFT);
+        $exec_time = number_format(($end_time - $start_time)*1000, 1);
+
+        $log_str = "(Time: {$exec_time}ms)  {$sql}";
+        $log_str .= !empty($values) ? " [['".join("', '", $values)."']]" : '';
+
+        $this->logger->log($log_str);
+
+        return $valid;
+    }
 
 	/**
 	 * Execute a query that returns maximum of one row with one field and return it.
