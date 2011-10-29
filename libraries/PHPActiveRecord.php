@@ -53,13 +53,20 @@ class PHPActiveRecord {
                 $cfg->set_default_connection($active_group);
 
                 // To enable logging and profiling, install the Log library 
-                // from pear and then uncomment the following block:
+                // from pear, create phpar.log inside of your application/logs 
+                // directory, then uncomment the following block:
 
                 /*
-                include 'Log.php';
-                $logger = Log::singleton('file', $_SERVER['DOCUMENT_ROOT'].'/application/logs/phpar.log','ident',array('mode' => 0664, 'timeFormat' =>  '%Y-%m-%d %H:%M:%S')); 
-                $cfg->set_logging(true);
-                $cfg->set_logger($logger);
+                $log_file = $_SERVER['DOCUMENT_ROOT'].'/application/logs/phpar.log';
+
+                if (file_exists($log_file) and is_writable($log_file)) {
+                    include 'Log.php';
+                    $logger = Log::singleton('file', $log_file ,'ident',array('mode' => 0664, 'timeFormat' =>  '%Y-%m-%d %H:%M:%S')); 
+                    $cfg->set_logging(true);
+                    $cfg->set_logger($logger);
+                } else {
+                    log_message('warning', 'Cannot initialize logger. Log file does not exist or is not writeable');
+                }
                 */
             });
 
