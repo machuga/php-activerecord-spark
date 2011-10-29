@@ -39,7 +39,7 @@ Documentation
 ------------
 
 Examples, documentation, and help forums are available at
-http://phpactiverecord.com.
+http://phpactiverecord.org.
 
 Verify PHPActiveRecord Works
 ---------------------------
