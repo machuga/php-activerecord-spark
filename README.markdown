@@ -54,32 +54,33 @@ Give model the following content:
 
     <?php
 
-    class Test extends ActiveRecord\Model {
-            
-    }
-
+    class Test extends ActiveRecord\Model { }
 
 
 Proceed to 'welcome.php' within your controllers directory
 
 Within the index function, enter the following prior to the view being called
 
-    $this->load->spark('php-activerecord/1.0');
+    $this->load->spark('php-activerecord/0.0.2');
     echo '<pre>'; var_dump(Test::all()); exit;
 
 If you've followed the steps above, you should now see a print out of your
 object, with the class of your Model.  Success!  PHPActiveRecord is now ready
 for use!
 
-Caveats
-------
+Logging and Profiling
+---------------------
 
-PHPActiveRecord's model autoloader is currently case-sensitive and needs the
-file name to match the class name exactly.  If enough people want to use
-lowercase file names, I will add this as a configuration option.  The only
-reason this wasn't done initially was to keep the php-activerecord library
-as-is without modifying any vendor files.
+If you'd like to enable logging and profiling, simply uncomment the
+designated block from `./libraries/PHPActiveRecord.php` beginning at
+line 59.
 
+HMVC Support
+------------
+
+If you use the Module Extensions HMVC, the model folders in each module
+will automatically be checked for models just as the regular model
+folder would.
 
 Contact and Credit
 -----------------

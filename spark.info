@@ -1,5 +1,5 @@
 name: php-activerecord
-version: 0.0.1
+version: 0.0.2
 compatibility: 2.0.1
 
 dependencies: []
