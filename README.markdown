@@ -1,7 +1,7 @@
 PHPActiveRecord Spark
 ====================
 
-[PHPActiveRecord](http://phpactiverecord.com) is an open source ORM library,
+[PHPActiveRecord](http://www.phpactiverecord.org/) is an open source ORM library,
 largely based on [Ruby on Rails](http://rubyonrails.com)' ActiveRecord.
 
 This spark is used to easily integrate PHPActiveRecord into CodeIgniter 2.0+.
