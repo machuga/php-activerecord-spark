@@ -85,7 +85,7 @@ folder would.
 Contact and Credit
 -----------------
 
-[PHPActiveRecord](http://phpactiverecord.com) was created and is maintained by
+[PHPActiveRecord](http://phpactiverecord.org) was created and is maintained by
 Kien La and Jacques Fuentes.  I am not associated with the developers of this
 project, but love the work they've done and want to make it easily accessible
 to the CodeIgniter community.
