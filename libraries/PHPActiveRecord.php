@@ -35,8 +35,10 @@ class PHPActiveRecord {
         {
             foreach ($db as $conn_name => $conn)
             {
+                // in the case of the postgre driver, a conversion is needed
+                $dbdriver = $conn['dbdriver'] == 'postgre' ? 'pgsql' : $conn['dbdriver']; 
                 // Build the DSN string for each connection
-                $connections[$conn_name] =       $conn['dbdriver'].
+                $connections[$conn_name] =       $dbdriver.
                                     '://'       .$conn['username'].
                                     ':'         .$conn['password'].
                                     '@'         .$conn['hostname'].
