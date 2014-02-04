@@ -45,7 +45,7 @@ function activerecord_autoload($class_name)
 	}
 
     $file_name = "{$class_name}.php";
-	$file = $root.DS.$file_name;
+	$file = $root.DS.strtolower($file_name);
 
 	if (file_exists($file)) {
 		require $file;
