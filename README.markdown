@@ -17,7 +17,7 @@ Navigate to the root of your CodeIgniter project and run
 
     php tools/spark install php-activerecord
 
-### Manually 
+### Manually
 
 * Navigate to your CodeIgniter project's 'sparks' folder
 * Extract the php-activerecord spark here, ensure it is named 'php-activerecord'
@@ -61,7 +61,7 @@ Proceed to 'welcome.php' within your controllers directory
 
 Within the index function, enter the following prior to the view being called
 
-    $this->load->spark('php-activerecord/0.0.2');
+    $this->load->spark('php-activerecord/2.0.0');
     echo '<pre>'; var_dump(Test::all()); exit;
 
 If you've followed the steps above, you should now see a print out of your
@@ -90,6 +90,6 @@ Kien La and Jacques Fuentes.  I am not associated with the developers of this
 project, but love the work they've done and want to make it easily accessible
 to the CodeIgniter community.
 
-This spark was created and is maintained by 
+This spark was created and is maintained by
 [Matthew Machuga](http://matthewmachuga.com), is hosted on [GitHub](http://github.com),
 and is made possible by the [GetSparks](http://getsparks.org) team.  Please support their project!
