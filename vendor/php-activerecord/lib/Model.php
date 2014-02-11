@@ -436,9 +436,16 @@ class Model
 	public function assign_attribute($name, $value)
 	{
 		$table = static::table();
-
-		if (array_key_exists($name,$table->columns) && !is_object($value))
-			$value = $table->columns[$name]->cast($value,static::connection());
+		if (!is_object($value)) {
+			if (array_key_exists($name, $table->columns)) {
+				$value = $table->columns[$name]->cast($value, static::connection());
+			} else {
+				$col = $table->get_column_by_inflected_name($name);
+				if (!is_null($col)){
+					$value = $col->cast($value, static::connection());
+				}
+			}
+		}
 
 		// convert php's \DateTime to ours
 		if ($value instanceof \DateTime)
@@ -548,7 +555,7 @@ class Model
 	 */
 	public function attribute_is_dirty($attribute)
 	{
-		return $this->__dirty && $this->__dirty[$attribute] && array_key_exists($attribute, $this->attributes);
+		return $this->__dirty && isset($this->__dirty[$attribute]) && array_key_exists($attribute, $this->attributes);
 	}
 
 	/**
@@ -742,12 +749,13 @@ class Model
 	 *
 	 * @param array $attributes Array of the models attributes
 	 * @param boolean $validate True if the validators should be run
+	 * @param boolean $guard_attributes Set to true to guard protected/non-accessible attributes
 	 * @return Model
 	 */
-	public static function create($attributes, $validate=true)
+	public static function create($attributes, $validate=true, $guard_attributes=true)
 	{
 		$class_name = get_called_class();
-		$model = new $class_name($attributes);
+		$model = new $class_name($attributes, $guard_attributes);
 		$model->save($validate);
 		return $model;
 	}
@@ -824,8 +832,8 @@ class Model
 				$this->attributes[$pk] = static::connection()->insert_id($table->sequence);
 		}
 
-		$this->invoke_callback('after_create',false);
 		$this->__new_record = false;
+		$this->invoke_callback('after_create',false);
 		return true;
 	}
 
@@ -1850,5 +1858,4 @@ class Model
 		}
 		return true;
 	}
-};
-?>
+}

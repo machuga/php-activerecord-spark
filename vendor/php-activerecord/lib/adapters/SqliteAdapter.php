@@ -13,6 +13,9 @@ use PDO;
  */
 class SqliteAdapter extends Connection
 {
+
+	static $datetime_format = 'Y-m-d H:i:s';
+
 	protected function __construct($info)
 	{
 		if (!file_exists($info->host))
@@ -41,11 +44,14 @@ class SqliteAdapter extends Connection
 	public function create_column($column)
 	{
 		$c = new Column();
-		$c->inflected_name	= Inflector::instance()->variablize($column['name']);
-		$c->name			= $column['name'];
-		$c->nullable		= $column['notnull'] ? false : true;
-		$c->pk				= $column['pk'] ? true : false;
-		$c->auto_increment	= $column['type'] == 'INTEGER' && $c->pk;
+		$c->inflected_name  = Inflector::instance()->variablize($column['name']);
+		$c->name            = $column['name'];
+		$c->nullable        = $column['notnull'] ? false : true;
+		$c->pk              = $column['pk'] ? true : false;
+		$c->auto_increment  = in_array(
+				strtoupper($column['type']),
+				array('INT', 'INTEGER')
+			) && $c->pk;
 
 		$column['type'] = preg_replace('/ +/',' ',$column['type']);
 		$column['type'] = str_replace(array('(',')'),' ',$column['type']);
@@ -88,7 +94,7 @@ class SqliteAdapter extends Connection
 	public function native_database_types()
 	{
 		return array(
-			'primary_key' => 'INTEGER NOT NULL PRIMARY KEY',
+			'primary_key' => 'integer not null primary key',
 			'string' => array('name' => 'varchar', 'length' => 255),
 			'text' => array('name' => 'text'),
 			'integer' => array('name' => 'integer'),
