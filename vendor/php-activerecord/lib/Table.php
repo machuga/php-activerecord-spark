@@ -254,7 +254,7 @@ class Table
 			// nested include
 			if (is_array($name))
 			{
-				$nested_includes = count($name) > 1 ? $name : $name[0];
+				$nested_includes = count($name) > 0 ? $name : $name[0];
 				$name = $index;
 			}
 			else
@@ -457,6 +457,7 @@ class Table
 	private function set_associations()
 	{
 		require_once 'Relationship.php';
+		$namespace = $this->class->getNamespaceName();
 
 		foreach ($this->class->getStaticProperties() as $name => $definitions)
 		{
@@ -466,6 +467,7 @@ class Table
 			foreach (wrap_strings_in_arrays($definitions) as $definition)
 			{
 				$relationship = null;
+				$definition += compact('namespace');
 
 				switch ($name)
 				{
@@ -549,5 +551,4 @@ class Table
 			trigger_error('static::$getters and static::$setters are deprecated. Please define your setters and getters by declaring methods in your model prefixed with get_ or set_. See
 			http://www.phpactiverecord.org/projects/main/wiki/Utilities#attribute-setters and http://www.phpactiverecord.org/projects/main/wiki/Utilities#attribute-getters on how to make use of this option.', E_USER_DEPRECATED);
 	}
-};
-?>
+}

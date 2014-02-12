@@ -6,7 +6,7 @@
 
 namespace ActiveRecord;
 
-require 'Column.php';
+require_once 'Column.php';
 
 use PDO;
 use PDOException;
@@ -47,6 +47,16 @@ abstract class Connection
 	 * @var string
 	 */
 	public $protocol;
+	/**
+	 * Database's date format
+	 * @var string
+	 */
+	static $date_format = 'Y-m-d';
+	/**
+	 * Database's datetime format
+	 * @var string
+	 */
+	static $datetime_format = 'Y-m-d H:i:s T';
 	/**
 	 * Default PDO options to set for each connection.
 	 * @var array
@@ -291,8 +301,11 @@ abstract class Connection
 	 */
 	public function query($sql, &$values=array())
 	{
-		//if ($this->logging)
-			//$this->logger->log($sql);
+		if ($this->logging)
+		{
+			$this->logger->log($sql);
+			if ( $values ) $this->logger->log($values);
+		}
 
 		$this->last_query = $sql;
 
@@ -306,30 +319,13 @@ abstract class Connection
 		$sth->setFetchMode(PDO::FETCH_ASSOC);
 
 		try {
-            $valid = $this->logging ? $this->profile_and_execute($sth, $sql, $values) : $sth->execute($values);
-			if (!$valid)
+			if (!$sth->execute($values))
 				throw new DatabaseException($this);
 		} catch (PDOException $e) {
-			throw new DatabaseException($sth);
+			throw new DatabaseException($e);
 		}
 		return $sth;
 	}
-
-    public function profile_and_execute($sth, $sql, &$values = array()) {
-        $start_time = microtime(true);
-        $valid = $sth->execute($values);
-        $end_time = microtime(true);
-
-        //$exec_time = str_pad(number_format(($end_time - $start_time)*1000, 1), 8, ' ', STR_PAD_LEFT);
-        $exec_time = number_format(($end_time - $start_time)*1000, 1);
-
-        $log_str = "(Time: {$exec_time}ms)  {$sql}";
-        $log_str .= !empty($values) ? " [['".join("', '", $values)."']]" : '';
-
-        $this->logger->log($log_str);
-
-        return $valid;
-    }
 
 	/**
 	 * Execute a query that returns maximum of one row with one field and return it.
@@ -455,7 +451,7 @@ abstract class Connection
 	 */
 	public function date_to_string($datetime)
 	{
-		return $datetime->format('Y-m-d');
+		return $datetime->format(static::$date_format);
 	}
 
 	/**
@@ -466,7 +462,7 @@ abstract class Connection
 	 */
 	public function datetime_to_string($datetime)
 	{
-		return $datetime->format('Y-m-d H:i:s T');
+		return $datetime->format(static::$datetime_format);
 	}
 
 	/**
@@ -483,7 +479,7 @@ abstract class Connection
 		if ($errors['warning_count'] > 0 || $errors['error_count'] > 0)
 			return null;
 
-		return new DateTime($date->format('Y-m-d H:i:s T'));
+		return new DateTime($date->format(static::$datetime_format));
 	}
 
 	/**
@@ -535,6 +531,3 @@ abstract class Connection
 	}
 
 }
-
-;
-?>
