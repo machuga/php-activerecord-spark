@@ -551,7 +551,10 @@ class HasMany extends AbstractRelationship
 
 	private function get_Foreign_key_through($model_class_name){
 		$relation = $model_class_name::table()->get_relationship($this->through);
-		return $relation->foreign_key;
+		$foreign_key = $relation->foreign_key;
+		if ($foreign_key==null)
+			$foreign_key = array(Inflector::instance()->keyify($model_class_name));
+		return $foreign_key;
 	}
 };
 
