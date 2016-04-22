@@ -464,13 +464,13 @@ class HasMany extends AbstractRelationship
 			$this->set_inferred_class_name();
 	}
 
-	protected function set_keys($model_class_name, $override=false)
+	protected function set_keys($model_class_name, $through=false)
 	{
-		//infer from class_name
-		if (!$this->foreign_key || $override)
-			$this->foreign_key = array(Inflector::instance()->keyify($model_class_name));
+		//If "through", get foreign key from the "through" relationship
+		if (!$this->foreign_key || $through)
+			$this->foreign_key = $this->get_Foreign_key_through($model_class_name);
 
-		if (!$this->primary_key || $override)
+		if (!$this->primary_key || $through)
 			$this->primary_key = Table::load($model_class_name)->pk;
 	}
 
@@ -547,6 +547,14 @@ class HasMany extends AbstractRelationship
 	{
 		$this->set_keys($table->class->name);
 		$this->query_and_attach_related_models_eagerly($table,$models,$attributes,$includes,$this->foreign_key, $table->pk);
+	}
+
+	private function get_Foreign_key_through($model_class_name){
+		$relation = $model_class_name::table()->get_relationship($this->through);
+		$foreign_key = $relation->foreign_key;
+		if ($foreign_key==null)
+			$foreign_key = array(Inflector::instance()->keyify($model_class_name));
+		return $foreign_key;
 	}
 };
 
